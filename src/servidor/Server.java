@@ -9,10 +9,10 @@ import java.net.Socket;
 public class Server {
 
     public ServerSocket serverSocket;
-    // Adicione os streams como atributos
     private ObjectOutputStream output;
     private ObjectInputStream input;
 
+    
     public void criarServerSocket(int porta) throws IOException {
         serverSocket = new ServerSocket(porta);
     }
@@ -21,20 +21,19 @@ public class Server {
         return serverSocket.accept();
     }
 
-    // Método para inicializar os streams UMA VEZ
     public void iniciarStreams(Socket socket) throws IOException {
         output = new ObjectOutputStream(socket.getOutputStream());
         input = new ObjectInputStream(socket.getInputStream());
     }
 
     public void fechaSocket(Socket s) throws IOException {
-        // Feche os streams também
+        // Fecha os streams também
         if (output != null) output.close();
         if (input != null) input.close();
         if (s != null) s.close();
     }
 
-    // Modifique os métodos para USAR os streams existentes
+    // Envia String ao cliente
     public void outputString(String saida) {
         try {
             output.writeUTF(saida);
@@ -45,6 +44,7 @@ public class Server {
         }
     }
 
+    // Recebe String do cliente
     public String inputString() {
         try {
             return input.readUTF();
@@ -53,13 +53,14 @@ public class Server {
         }
         return null;
     }
-
-    public Integer inputInt() { // Retorne Integer para poder retornar null
+    
+    // Recebe Integer do cliente
+    public Integer inputInt() { 
         try {
             return input.readInt();
         } catch (IOException e) {
             System.out.println("Erro ao ler Int: " + e.getMessage());
         }
-        return null; // Retorne um Integer nulo, não um int
+        return null; 
     }
 }

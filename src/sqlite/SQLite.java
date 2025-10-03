@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class SQLite {
+	
+	// Conecta o banco de dados
 	public static void connect() {
 		String url = "jdbc:sqlite:ecocoleta.db";
 		
@@ -19,6 +21,7 @@ public class SQLite {
 		}
 	}
 	
+	// Cria uma tabela se não existir
 	public static void createNewTable() {
 		String url = "jdbc:sqlite:ecocoleta.db";
 		String sql = "CREATE TABLE IF NOT EXISTS locais (\n"
@@ -39,6 +42,7 @@ public class SQLite {
 		}
 	}
 	
+	// Insere informações
 	public static void insert(String nome, String endereco, String residuo) {
 		String url = "jdbc:sqlite:ecocoleta.db";
 		String sql = "INSERT INTO locais (nome, endereco, residuo) VALUES (?, ?, ?)";
@@ -57,6 +61,7 @@ public class SQLite {
 		}
 	}
 	
+	// Exibe informações
 	public static void printOut() {
 		String url = "jdbc:sqlite:ecocoleta.db";
 		String sql = "SELECT nome, endereco, residuo FROM locais";
@@ -78,6 +83,7 @@ public class SQLite {
 		}
 	}
 	
+	// Deleta pelo nome
 	public static void delete(String nome) {
 	    String url = "jdbc:sqlite:ecocoleta.db";
 	    String sql = "DELETE FROM locais WHERE nome = ?";
@@ -99,6 +105,7 @@ public class SQLite {
 	    }
 	}
 	
+	// Exibe informações filtradas pelo residuo
 	public static String getByResiduo(String residuo) {
 	    String url = "jdbc:sqlite:ecocoleta.db";
 	    String sql = "SELECT * FROM locais WHERE locais.residuo = ?";
@@ -128,6 +135,7 @@ public class SQLite {
 	    return resultado.toString();
 	}
 	
+	// Edita informações
 	public static void updateLocal(String nomeAtual, String novoNome, String novoEndereco, String novoResiduo) {
 	    String url = "jdbc:sqlite:ecocoleta.db";
 	    String sql = "UPDATE locais SET nome = ?, endereco = ?, residuo = ? WHERE nome = ?";

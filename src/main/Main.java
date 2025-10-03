@@ -11,36 +11,35 @@ public class Main {
         Socket socket = null;
 
         try {
+        	// Inicia o servidor e conecta ao cliente
             System.out.println("Aguardando conexão...");
             server.criarServerSocket(55555);
             socket = server.esperaConexao();
             System.out.println("Cliente conectado.");
-            
-            // Inicialize os streams aqui, uma única vez!
             server.iniciarStreams(socket);
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
-            // Se a conexão falhar, não adianta continuar
             if (socket != null) socket.close();
             return;
         }
 
+        // Inicia o banco de dados (cria uma tabela se já não existir uma)
         SQLite.connect();
         SQLite.createNewTable();
 
-        Integer cursor = 0; // Use Integer para aceitar null
+        Integer cursor = 0; 
 
         do {
-            // Ajuste as chamadas para não passar o socket
+            // Envia o menu principal ao cliente
             server.outputString("Bem vindo ao EcoColeta");
             server.outputString("Veja os pontos de coleta disponíveis para cada tipo de resíduo.");
             server.outputString("1. Plástico \n2. Metal \n3. Papel \n4. Vidro \n5. Sair");
             server.outputString("Escolha as opções pela numeração: ");
-            
+            // Recebe a ação do cliente
             cursor = server.inputInt();
 
-            // Verifique se a conexão foi perdida
+            // Verifica se a conexão foi perdida
             if (cursor == null) {
                 System.out.println("Conexão com o cliente perdida. Encerrando servidor.");
                 break; // Sai do loop principal
@@ -48,42 +47,42 @@ public class Main {
 			switch (cursor) {
 			case 1:
 				do {
+					// Envia uma lista filtrada em String 
 					server.outputString(SQLite.getByResiduo("plastico"));
-					//saida
 					server.outputString("Digite 0 para voltar.");
-					//entrada
+					// Recebe a ação do cliente
 					cursor = server.inputInt();
 				}while (cursor != 0);
 				break;
 			case 2:
 				do {
+					// Envia uma lista filtrada em String
 					server.outputString(SQLite.getByResiduo("metal"));
-					//saida
 					server.outputString("Digite 0 para voltar.");
-					//entrada
+					// Recebe a ação do cliente
 					cursor = server.inputInt();
 				}while (cursor != 0);
 				break;
 			case 3:
 				do {
+					// Envia uma lista filtrada em String
 					server.outputString(SQLite.getByResiduo("papel"));
-					//saida
 					server.outputString("Digite 0 para voltar.");
-					//entrada
+					// Recebe a ação do cliente
 					cursor = server.inputInt();
 				}while (cursor != 0);
 				break;
 			case 4:
 				do {
+					// Envia uma lista filtrada em String
 					server.outputString(SQLite.getByResiduo("vidro"));
-					//saida
 					server.outputString("Digite 0 para voltar.");
-					//entrada
+					// Recebe a ação do cliente
 					cursor = server.inputInt();
 				}while (cursor != 0);
 				break;
 			case 5:
-				//saida
+				// Encerra o loop principal
 				server.outputString("Fechando...");
 				break;
 			case 123456:
@@ -91,66 +90,50 @@ public class Main {
 				String endereco;
 				String residuo;
 				do {
-					//saida
+					// Envia o menu do ADM
 					server.outputString("Entrando como adm...");
 					server.outputString("1. Inserir na tabela. \n2. Apagar da tabela (pelo nome) \n3. Editar tabela \n4. Sair");
 					server.outputString("Escolha as opções pela numeração: ");
-					//entrada
+					// Recebe a ação do cliente
 					cursor = server.inputInt();
 					switch (cursor) {
 					case 1:
-						//saida
+						// Inserindo no banco de dados
 						server.outputString("Digite o nome do local: ");
-						//entrada
 						nome = server.inputString();
-						//saida
 						server.outputString("Digite o endereço do local: ");
-						//entrada
 						endereco = server.inputString();
-						//saida
 						server.outputString("Digite o tipo de resíduo coletado (sem acentos): ");
-						//entrada
 						residuo = server.inputString();
 						SQLite.insert(nome, endereco, residuo);
-						//saida
 						server.outputString("Inserido!");
 						break;
 						
 					case 2:
-						//saida
+						// Apagando no no banco de dados
 						server.outputString("Digite o nome do item que deseja apagar: \n");
-						//entrada
 						nome = server.inputString();
 						SQLite.delete(nome);
-						//saida
 						server.outputString("Apagado!");
 						break;
 						
 					case 3:
 						String nomeAtual;
-						//saida
+						// Editando no banco de dados
 						server.outputString("Digite o nome atual do local: ");
-						//entrada
 						nomeAtual = server.inputString();
-						//saida
 						server.outputString("Digite o novo nome do local: ");
-						//entrada
 						nome = server.inputString();
-						//saida
 						server.outputString("Digite o novo endereço do local: ");
-						//entrada
 						endereco = server.inputString();
-						//saida
 						server.outputString("Digite o tipo de resíduo coletado (sem acentos): ");
-						//entrada
 						residuo = server.inputString();
 						SQLite.updateLocal(nomeAtual, nome, endereco, residuo);
-						//saida
 						server.outputString("Editado!");
 						break;
 						
 					case 4:
-						//saida
+						// Saindo do menu de ADM
 						server.outputString("Voltando...");
 						break;
 					}
